@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To-Do List</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="flex justify-center items-center min-h-screen bg-cover bg-center" style="background-image: url('bg.jpg');">
+    <div class="bg-blue-100 p-6 rounded-lg shadow-lg w-96">
+        <h1 class="text-2xl font-bold text-center mb-4">To-Do List</h1>
+        <div class="flex flex-col gap-2 mb-4">
+            <input id="taskInput" type="text" class="border p-2 rounded-lg" placeholder="Tambahkan tugas...">
+            <input id="deadlineInput" type="date" class="border p-2 rounded-lg">
+            <button onclick="addTask()" class="bg-blue-500 text-white px-4 py-2 rounded-lg">Tambah</button>
+        </div>
+        <ul id="taskList" class="space-y-2"></ul>
+    </div>
+
+    <script>
+        function addTask() {
+            const taskInput = document.getElementById("taskInput");
+            const deadlineInput = document.getElementById("deadlineInput");
+            const taskList = document.getElementById("taskList");
+            const taskText = taskInput.value.trim();
+            const deadline = deadlineInput.value;
+            if (taskText === "") return;
+
+            const li = document.createElement("li");
+            li.className = "flex flex-col bg-gray-200 p-2 rounded-lg";
+            li.innerHTML = `
+                <div class="flex justify-between items-center">
+                    <span class="flex-1">${taskText}</span>
+                    <div class="flex gap-2">
+                        <button onclick="completeTask(this)" class="text-green-500">✅</button>
+                        <button onclick="editTask(this)" class="text-yellow-500">✏️</button>
+                        <button onclick="deleteTask(this)" class="text-red-500">❌</button>
+                    </div>
+                </div>
+                <small class="text-gray-600">Deadline: ${deadline || "Tidak ada"}</small>
+            `;
+            taskList.appendChild(li);
+            taskInput.value = "";
+            deadlineInput.value = "";
+        }
+
+        function deleteTask(button) {
+            button.parentElement.parentElement.parentElement.remove();
+        }
+
+        function editTask(button) {
+            const li = button.parentElement.parentElement.parentElement;
+            const taskText = li.querySelector("span").innerText;
+            document.getElementById("taskInput").value = taskText;
+            deleteTask(button);
+        }
+
+        function completeTask(button) {
+            const taskText = button.parentElement.parentElement.querySelector("span");
+            taskText.classList.toggle("line-through");
+            taskText.classList.toggle("text-gray-500");
+        }
+    </script>
+</body>
+</html>
